@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        var arr;  //수정및 삭제를 위한 전역변수
+        //리스트 출력
+        $.ajax("/listDept",{success:function(data){
+          arr = data;
+          $.each(data,function(idx,d){
+              var tr1 = $("<tr></tr>").attr("idx",idx);   //수정삭제, 몇번째 tr인지 확인하려고 작성
+
+            //수정 및 삭제를 위해 list창을 누르면 정보가 뜨는지 확인하기위함
+            $(tr1).click(function(){
+
+              var i =$(this).attr("idx");   //누른 tr이 몇번째 tr인지 확인해서 i에 담고 배열로 출력
+             $("#dno").val(arr[i].DNO);
+             $("#dname").val(arr[i].DNAME);
+             $("#dloc").val(arr[i].DLOC);
+
+           });
+
+            //리스트 출력!!!!!!
+            var td1 = $("<td></td>").html(d.DNO);
+            var td2 = $("<td></td>").html(d.DNAME);
+            var td3 = $("<td></td>").html(d.DLOC);
+
+            $(tr1).append(td1,td2,td3)
+            $("#tb").append(tr1);
+
+
+          });
+        }});
+
+        //등록
+      $("#btnSave").click(function(){
+        var dept = $("#f").serialize();
+       $.ajax("insertDept",{data:dept,success:function(r){
+            location.href = "listDept.html";
+
+
+       }});
+     });
+      //수정
+      $("#btnEdit").click(function(){
+        var dept = $("#f").serialize();
+       $.ajax("editDept",{data:dept,success:function(r){
+            location.href = "listDept.html";
+
+
+       }});
+     });
+        //삭제
+      $("#btnDelete").click(function(){
+        var dept = $("#f").serialize();
+       $.ajax("deleteDept",{data:dept,success:function(r){
+            location.href = "listDept.html";
+
+
+       }});
+     });
+
+   });
+
+
+    </script>
+  </head>
+  <body>
+        <h2>부서 목록</h2>
+        <hr>
+        <table id="tb" border="1" width="80%">
+            <thead>
+              <tr>
+                  <th>부서번호</th>
+                  <th>부서명</th>
+                  <th>부서위치</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+        <hr>
+
+
+        <h2>부서등록</h2>
+
+        <form id="f">
+           부서번호:<input id="dno" type="text" name="dno" ><br>
+           부서이름:<input id="dname"type="text" name="dname"><br>
+           부서위치:<input id="dloc" type="text" name="dloc"><br>
+          <!-- <input id="input" type="submit" value="등록"> -->
+        </form>
+      <button id="btnSave" type="button" name="button">등록</button>
+      <button id="btnEdit" type="button" name="button">수정</button>
+      <button id="btnDelete" type="button" name="button">삭제</button>
+  </body>
+</html>
